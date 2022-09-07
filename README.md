@@ -1,11 +1,19 @@
-ch1. React Getting Started
+# :sunflower: React-study
+:open_file_folder: ch1. React Getting Started
 
 <details>
 <summary> :pencil: 01. React Concept  </summary>
 <div markdown="1">
 
-Component Tree => DOM Tree
-## Why virtual DOM?
+## 01. React Concept 
+### :pushpin: React 란 무엇일까?
+React 는 사용자 인터페이스(User Interface)를 만들기 위한 Javascript 라이브러리이다. <br>
+React 를 이해하기 위해 DOM(Document Object Model)을 알아야한다. <br>
+DOM 은 자바스크립트에서 HTML에 접근할 수 있도록 요소들을 객체화하여 사용할 수 있도록 한다. <br>
+DOM은 HTML이나 XML 문서의 interface 이다.
+### :pushpin: Virtual DOM
+가상 DOM은 DOM이 생성되기 전, 이전 상태 값과 수정사항을 비교하여 달라진 부분만 DOM 에게 한번에 전달하여 한번만 렌더링을 진행한다.
+### :pushpin: Why virtual DOM?
 - DOM 을 직접 제어하는 경우
     - 바뀐 부분만 정확히 바꿔야 한다.
 - DOM을 직접 제어하지 않는 경우
