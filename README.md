@@ -7,10 +7,10 @@
 
 ## 01. React Concept 
 ### :pushpin: React 란 무엇일까?
-React 는 사용자 인터페이스(User Interface)를 만들기 위한 Javascript 라이브러리이다. <br>
-React 를 이해하기 위해 DOM(Document Object Model)을 알아야한다. <br>
-DOM 은 자바스크립트에서 HTML에 접근할 수 있도록 요소들을 객체화하여 사용할 수 있도록 한다. <br>
-DOM은 HTML이나 XML 문서의 interface 이다.
+> React 는 사용자 인터페이스(User Interface)를 만들기 위한 Javascript 라이브러리이다. <br>
+> React 를 이해하기 위해 DOM(Document Object Model)을 알아야한다. <br>
+> DOM 은 자바스크립트에서 HTML에 접근할 수 있도록 요소들을 객체화하여 사용할 수 있도록 한다.<br>
+> DOM은 HTML이나 XML 문서의 interface 이다.
 ### :pushpin: Virtual DOM
 가상 DOM은 DOM이 생성되기 전, 이전 상태 값과 수정사항을 비교하여 달라진 부분만 DOM 에게 한번에 전달하여 한번만 렌더링을 진행한다.
 ### :pushpin: Why virtual DOM?
@@ -20,6 +20,9 @@ DOM은 HTML이나 XML 문서의 interface 이다.
     - 가상의 돔 트리를 사용해서,
     - 이전 상태를 비교하여, 
     - 바뀐 부분을 찾아내서 자동으로 바꾼다.
+### :pushpin: 컴포넌트
+- React는 UI를 여러 컴포넌트로 만들어 사용하므로 재사용성이 높다.
+- 프로젝트가 복잡해지더라도 코드 유지보수 및 관리에 용이하다.
 </div>
 </details>
 
