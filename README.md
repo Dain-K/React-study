@@ -74,3 +74,128 @@ $ npx serve
 
 </div>
 </details>
+
+:open_file_folder: ch2. React Component
+01. React Component 만드는법
+- class 컴포넌트
+```js
+import React from 'react';
+
+// 정의
+class ClassComponent extends React.Component {
+    render() { 
+        // 항상 return 해주어야 한다.
+        return (<div>Hello</div>);
+    }
+}
+
+// 사용
+ReactDom.render(
+    <ClassComponent />,
+    document.querySelector('#root')
+)
+```
+
+- function 컴포넌트
+```js
+import React from 'react';
+
+// 정의 1
+function FunctionComponent() {
+    return <div>Hello</div>;
+}
+// 사용
+ReactDOM.render(<FunctionComponent />, document.querySelector('#root'))
+
+// 정의 2
+const FunctionComponent = () => <div>Hello</div>;
+
+// 사용
+ReactDOM.render(<FunctionComponent />, document.querySelector('#root'))
+```
+## React.createElemet
+사용형태
+```js
+React.createElemet(
+    type, // 태그 이름 문자열 | 리액트 컴포넌트 | React.Fragment
+    [props], // 리액트 컴포넌트에 넣어주는 데이터 객체
+    [...children] // 자식으로 넣어주는 요소들
+);
+```
+:one: 태그 이름 문자열 type
+```html
+<div id="root"></div>
+<script type="text/javascript">
+    ReactDOM.render(
+        React.createElement("h1", null, `type 이 "태그 이름 문자열" 입니다.`),
+        document.querySelector("#root")
+    );
+</script>
+```
+:two: 리액트 컴포넌트 type
+```html
+<div id="root"></div>
+<script type="text/javascript">
+    const Component = () => {
+        return React.createElement("p", null, `type이 "React 컴포넌트" 입니다.`)
+    }
+
+    // <Component></Component> => <Component /> => <p>type이 "React 컴포넌트" 입니다.</p>
+    ReactDOM.render(
+        React.createElement(Component, null, null),
+        document.querySelector("#root")
+    );
+</script>
+```
+:three: React.Fragment
+```html
+<div id="root"></div>
+<script type="text/javascript">
+    ReactDOM.render(
+        React.createElement(
+            React.Fragment,
+            null,
+            `type 이 "React Fragment" 입니다.`
+        ),
+        document.querySelector("#root")
+    );
+</script>
+```
+## 03. JSX 
+복잡한 코드를 순수하게 실행할 수 있는 자바스크립트로 변환하는 과정이 필요하다.<br>
+JSX 문법으로 작성된 코드는 순수한 JavaScript로 컴파일 하여 사용한다. <br>
+이는 `babel` 에 의해 진행된다.
+[babel 사이트](https://babeljs.io/)
+아래의 코드를 추가해주면 자동으로 변환한다.
+```html
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<div id="root"></div>
+<script type="text/babel">
+    ReactDOM.render(
+        <div>
+            <div>
+                <h1>주제</h1>
+                <ul>
+                    <li>React</li>
+                    <li>Vue</li>
+                </ul>
+            </div>
+        </div>,
+        document.querySelector("#root")
+    );
+</script>
+```
+### JSX를 사용하는 이유
+- React.createElement VS JSX
+    - JSX가 가독성이 엄청 좋음
+- babel 과 같은 컴파일 과정에서 문법적 오류를 인지하기 쉬움
+### JSX 문법
+- 최상위 요소가 하나여야 합니다.
+- 최상위 요소 리턴하는 경우, () 로 감싸야 합니다.
+- 자식들을 바로 랜더링하고 싶으면, <>자식들</>를 사용합니다. => Fragment
+- 자바스크립트 표현식을 사용하려면, {표현식} 를 이용합니다.
+- if 문은 사용할 수 없습니다.  
+    - 삼항 연산자 혹은 &&를 사용합니다.
+- style 을 이용해 인라인 스타일링이 가능합니다.
+- class 대신 className 을 사용해 class 를 적용할 수 있습니다.
