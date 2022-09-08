@@ -239,5 +239,247 @@ JSX 문법으로 작성된 코드는 순수한 JavaScript로 컴파일 하여 �
 Props 와 State 를 바탕으로 컴포넌트를 그립니다. <br>
 그리고 Props와 state가 변경되면, 컴포넌트를 다시 그립니다. <br>
 컴포넌트를 그리는 방법을 기술하는 함수가 랜더합수 입니다.
+![mainpage](img/props.png) 
+## Props
+### :pushpin: 코드로 살펴보기
+:one: function Component 이용하기
+```html
+<div id="root"></div>
+<script type="text/babel">
+    console.log(React);
+    console.log(ReactDOM);
+
+    // {message: '안녕하세요!!!'}
+    function Component(props) {
+        return (
+            <div>
+                <h1>{props.message} 이것은 함수로 만든 컴포넌트 입니다.</h1>
+            </div>
+        );
+        // 출력: 안녕하세요!!! 이것은 함수로 만든 컴포넌트 입니다.
+    }
+
+    ReactDOM.render(
+        <Component message = "안녕하세요!!!" />,
+        document.querySelector('#root')
+    );
+</script>
+```
+:two: class Component 이용하기
+```html
+<div id="root"></div>
+<script type="text/babel">
+    console.log(React);
+    console.log(ReactDOM);
+
+    class Component extends React.Component {
+        render() {
+            return (
+                <div>
+                    <h1>{this.props.message} 이것은 클래스로 만든 컴포넌트 입니다.</h1>
+                </div>
+            );
+        }
+    }
+
+    ReactDOM.render(
+        <Component message = "안녕하세요!!" />,
+        document.querySelector('#root')
+    );
+</script>
+```
+- 기본값 지정해보기 1
+```html
+<div id="root"></div>
+<script type="text/babel">
+    console.log(React);
+    console.log(ReactDOM);
+
+    class Component extends React.Component {
+        render() {
+            return (
+                <div>
+                    <h1>{this.props.message} 이것은 클래스로 만든 컴포넌트 입니다.</h1>
+                </div>
+            );
+        }
+    }
+
+    Component.defaultProps = {
+        message: "기본값",
+    };
+
+    ReactDOM.render(
+        <Component />,
+        document.querySelector('#root')
+    );
+</script>
+```
+- 기본값 지정해보기 2
+```html
+<div id="root"></div>
+<script type="text/babel">
+    console.log(React);
+    console.log(ReactDOM);
+
+    class Component extends React.Component {
+        render() {
+            return (
+                <div>
+                    <h1>{this.props.message} 이것은 클래스로 만든 컴포넌트 입니다.</h1>
+                </div>
+            );
+        }
+
+        static defaultProps = {
+            message: "기본값",
+        };
+    }
+
+
+    ReactDOM.render(
+        <Component />,
+        document.querySelector('#root')
+    );
+</script>
+```
+함수에서도 사용 가능하다.
+## State
+- State 정의 방법 1: 항상 객체 형태로 선언해야함
+```html
+<div id="root"></div>
+<script type="text/babel">
+    console.log(React);
+    console.log(ReactDOM);
+
+    class Component extends React.Component {
+        state = {
+            count: 0,
+        }
+        render() {
+            return (
+                <div>
+                    <h1>
+                        {this.props.message} 이것은 클래스로 만든 컴포넌트 입니다.
+                    </h1>
+                    <p>{this.state.count}</p>
+                </div>
+            );
+        }
+
+        componentDidMount() { // 메서드 재정의
+            setTimeout(() => {
+                this.setState({
+                    count: this.state.count + 1,
+                });
+            }, 1000);
+        }
+
+        static defaultProps = {
+            message: "기본값",
+        };
+    }
+
+
+    ReactDOM.render(
+        <Component message="기본값 아님"/>,
+        document.querySelector('#root')
+    );
+</script>
+```
+
+- State 정의 방법 2
+```html
+<div id="root"></div>
+<script type="text/babel">
+    console.log(React);
+    console.log(ReactDOM);
+
+    class Component extends React.Component {
+        constructor(props) {
+            super(props);
+
+            // state 초기화
+            this.state = {count: 0};
+        }
+
+        render() {
+            return (
+                <div>
+                    <h1>
+                        {this.props.message} 이것은 클래스로 만든 컴포넌트 입니다.
+                    </h1>
+                    <p>{this.state.count}</p>
+                </div>
+            );
+        }
+
+        componentDidMount() { // 메서드 재정의
+            setTimeout(() => {
+                // this.setState({
+                //     count: this.state.count + 1,
+                // });
+                this.setState((previousState) => {
+                    const newState = { count: previousState.count + 1 }
+                    return newState;
+                })
+            }, 1000);
+        }
+
+        static defaultProps = {
+            message: "기본값",
+        };
+    }
+
+
+    ReactDOM.render(
+        <Component message="기본값 아님"/>,
+        document.querySelector('#root')
+    );
+</script>
+```
+
+</div>
+</details>
+
+
+<details>
+<summary> :pencil: Event Handling  </summary>
+<div markdown="1">
+
+## Event Handling
+- HTML DOM 에 클릭하면 이벤트가 발생하고, 발생하면 그에 맞는 병경이 일어나도록 해야합니다.
+- JSX 에 이벤트를 설정할 수 있습니다.
+```js
+class Comp extends React.Component {
+    render() {
+        return (
+            <div>
+                <button onClick={ () =>{
+                    console.log('clicked');
+                }}>클랙</button>
+            </div>
+        )
+    }
+}
+```
+- camelCase 로만 사용할 수 있습니다.
+    - onClick, onMouseEnter
+- 이벤트에 연결된 자바스트립트 코드는 함수입니다.
+    - 이벤트={함수} 와 같이 사용합니다.
+- 실제 DOM 요소들에만 사용 가능합니다.
+    - 리액트 컴포넌트에 사용하면, 그냥 props로 전달합니다.
+### :pushpin: 코드 예제
+```html
+<script type="text/babel">
+    function Component() {
+        return <div><button onClick={()=> {
+            console.log("clicked");
+        }}>클릭</button></div>
+    }
+
+    ReactCOM.render(<Component />, document.querySelector('#root'));
+</script>
+```
 </div>
 </details>
