@@ -75,9 +75,18 @@ $ npx serve
 </div>
 </details>
 
+
+
+
+
 :open_file_folder: ch2. React Component
-01. React Component 만드는법
-- class 컴포넌트
+
+<details>
+<summary> :pencil: React Component 만드는법  </summary>
+<div markdown="1">
+
+## React Component 만드는법 - 2가지
+### class 컴포넌트
 ```js
 import React from 'react';
 
@@ -96,7 +105,7 @@ ReactDom.render(
 )
 ```
 
-- function 컴포넌트
+### function 컴포넌트
 ```js
 import React from 'react';
 
@@ -113,6 +122,13 @@ const FunctionComponent = () => <div>Hello</div>;
 // 사용
 ReactDOM.render(<FunctionComponent />, document.querySelector('#root'))
 ```
+</div>
+</details>
+
+<details>
+<summary> :pencil: React.createElemet  </summary>
+<div markdown="1">
+
 ## React.createElemet
 사용형태
 ```js
@@ -161,7 +177,14 @@ React.createElemet(
     );
 </script>
 ```
-## 03. JSX 
+</div>
+</details>
+
+<details>
+<summary> :pencil: JSX  </summary>
+<div markdown="1">
+
+## JSX
 복잡한 코드를 순수하게 실행할 수 있는 자바스크립트로 변환하는 과정이 필요하다.<br>
 JSX 문법으로 작성된 코드는 순수한 JavaScript로 컴파일 하여 사용한다. <br>
 이는 `babel` 에 의해 진행된다.
@@ -186,6 +209,7 @@ JSX 문법으로 작성된 코드는 순수한 JavaScript로 컴파일 하여 �
     );
 </script>
 ```
+
 ### JSX를 사용하는 이유
 - React.createElement VS JSX
     - JSX가 가독성이 엄청 좋음
@@ -199,3 +223,21 @@ JSX 문법으로 작성된 코드는 순수한 JavaScript로 컴파일 하여 �
     - 삼항 연산자 혹은 &&를 사용합니다.
 - style 을 이용해 인라인 스타일링이 가능합니다.
 - class 대신 className 을 사용해 class 를 적용할 수 있습니다.
+</div>
+</details>
+
+<details>
+<summary> :pencil: Props와 State  </summary>
+<div markdown="1">
+
+## Props와 State
+- Props는 컴포넌트 외부에서 컴포넌트에게 주는 데이터 입니다.
+- State 는 컴포넌트 내부에서 변경할 수 있는 데이터 입니다.
+- 둗다 변경이 발생하면, 랜더가 다시 일어날 수 있습니다.
+
+## Render 함수
+Props 와 State 를 바탕으로 컴포넌트를 그립니다. <br>
+그리고 Props와 state가 변경되면, 컴포넌트를 다시 그립니다. <br>
+컴포넌트를 그리는 방법을 기술하는 함수가 랜더합수 입니다.
+</div>
+</details>
