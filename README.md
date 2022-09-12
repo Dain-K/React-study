@@ -582,3 +582,57 @@ class Comp extends React.Component {
 ```
 </div>
 </details>
+
+<details>
+<summary> :pencil: Component Lifecycle  </summary>
+<div markdown="1">
+
+## Component Lifecycle
+리액트 컴포넌트는 탄생부터 죽음까지 여러지점에서 개발자가 작업이 가능하도록 메서드를 오버라이딩 할 수 있게 해준다.
+
+### :pushpin: Component 생성 및 마운트
+- constructor
+- componentWillMount
+- render(최초 렌더)
+- componentDidMount
+
+```html
+<script type="text/babel">
+    class App extends React.component {
+        state = {
+            age: 23,
+        };
+        constructor(props) {
+            super(props);
+
+            console.log("constructor", props);
+        };
+        render() {
+            console.log('render');
+            return (
+                <div>
+                    <h2>
+                        Hello {this.props.name} - {this.state.age}
+                    </h2>
+                </div>
+            );
+        }
+        componentWillMount() {
+            console.log("componentWillMount");
+        }
+        conmonentDidMount() {
+            console.log("componentDidMount");
+
+            setInterval(() => {
+                console.log("setInterval");
+                this.setState(state => ({...state, age: state.age}));
+            }, 1000)
+        }
+    }
+
+    ReactDOM.render(<App name="Mark" />, document.querySelector('#root'));
+</script>
+```
+
+</div>
+</details>
