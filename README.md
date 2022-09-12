@@ -457,7 +457,7 @@ class Comp extends React.Component {
             <div>
                 <button onClick={ () =>{
                     console.log('clicked');
-                }}>클랙</button>
+                }}></button>
             </div>
         )
     }
@@ -590,7 +590,7 @@ class Comp extends React.Component {
 ## Component Lifecycle
 리액트 컴포넌트는 탄생부터 죽음까지 여러지점에서 개발자가 작업이 가능하도록 메서드를 오버라이딩 할 수 있게 해준다.
 
-### :pushpin: Component 생성 및 마운트
+### :one: Component 생성 및 마운트
 - constructor
 - componentWillMount
 - render(최초 렌더)
@@ -633,6 +633,11 @@ class Comp extends React.Component {
     ReactDOM.render(<App name="Mark" />, document.querySelector('#root'));
 </script>
 ```
-
+### :two: Component props, state 변경
+- componentWillReceiveProps
+- shouldComponentUpdate
+- componentWillUpdate
+- <b>render</b>
+- componentDidUpdate
 </div>
 </details>
