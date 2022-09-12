@@ -469,13 +469,112 @@ class Comp extends React.Component {
     - 이벤트={함수} 와 같이 사용합니다.
 - 실제 DOM 요소들에만 사용 가능합니다.
     - 리액트 컴포넌트에 사용하면, 그냥 props로 전달합니다.
-### :pushpin: 코드 예제
+### :pushpin: 코드 구현
+- 함수로 구현
 ```html
 <script type="text/babel">
     function Component() {
-        return <div><button onClick={()=> {
+        return (
+            <div>
+                <button onClick={()=> {
+                    console.log("clicked");
+                }}>
+                    클릭
+                </button>
+            </div>
+        )
+        
+    }
+
+    ReactCOM.render(<Component />, document.querySelector('#root'));
+</script>
+```
+- class로 구현
+```html
+<script type="text/babel">
+    class Component extends React.Component {
+        state = {
+            count: 0,
+        };
+        render() {
+            return (
+                <div>
+                <p>{this.state.count}</p>
+                <button 
+                    // onMouseEnter
+                    onClick={()=> {
+                        console.log("clicked");
+                        this.setState((state) => ({
+                            ...state, 
+                            count: state.count + 1
+                        }));
+                }}>
+                    클릭
+                </button>
+            </div>
+            );     
+        }
+    }
+
+    ReactCOM.render(<Component />, document.querySelector('#root'));
+</script>
+```
+- 위 코드 `method` 로 분리하기 1
+```html
+<script type="text/babel">
+    class Component extends React.Component {
+        state = {
+            count: 0,
+        };
+        constructor(props) {
+            super(props);
+
+            this.click = this.click.bind(this);
+        }
+        render() {
+            return (
+                <div>
+                <p>{this.state.count}</p>
+                <button onClick={this.click}>클릭</button>
+            </div>
+            );
+            
+        }
+        click() {
             console.log("clicked");
-        }}>클릭</button></div>
+            this.setState((state) => ({
+                ...state, 
+                count: state.count + 1
+            }));
+        }
+    }
+
+    ReactCOM.render(<Component />, document.querySelector('#root'));
+</script>
+```
+- 위 코드 `method` 로 분리하기 2
+```html
+<script type="text/babel">
+    class Component extends React.Component {
+        state = {
+            count: 0,
+        };
+        render() {
+            return (
+                <div>
+                <p>{this.state.count}</p>
+                <button onClick={this.click}>클릭</button>
+            </div>
+            );
+            
+        }
+        click = () => {
+            console.log("clicked");
+            this.setState((state) => ({
+                ...state, 
+                count: state.count + 1
+            }));
+        };
     }
 
     ReactCOM.render(<Component />, document.querySelector('#root'));
