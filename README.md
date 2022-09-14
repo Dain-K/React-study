@@ -635,9 +635,248 @@ class Comp extends React.Component {
 ```
 ### :two: Component props, state 변경
 - componentWillReceiveProps
+    - props 를 새로 지정했을 때 바로 호출됩니다.
+    - 여기는 state 의 변경에 반응하지 않습니다.
+        - 여기서 props 의 값에 따라 state 를 변경해야 한다면, 
+            - setState 를 이용해 state 를 변경합니다.
+            - 그러면 다음 이벤트로 각각 가는 것이 아니라 한번에 변경됩니다.    
 - shouldComponentUpdate
+    - props 만 변경되어도 실행됩니다.
+    - state 만 변경되어도 실행됩니다.
+    - props & state 둘다 변경되어도 실행됩니다.
+    - newProps 와 new State 를 인자로 해서 호출합니다.
+    - return type 이 boolean 입니다.
+        - true 면 render
+        - false 면 render 가 호출되지 않습니다.
+        - 이 함수를 구현하지 않으면, 디폴트는 true 입니다.
 - componentWillUpdate
+    - 컴포넌트가 재 렌더링 되기 직접에 불립니다.
+    - 여기선 setState 같은 것을 사용하면 안됩니다.
 - <b>render</b>
 - componentDidUpdate
+    - 컴포넌트가 재 렌더링을 마치면 불립니다.
+
+```html
+<script type="text/babel">
+    class App extends React.component {
+        state = {
+            age: 23,
+        };
+        interval = 0;
+        constructor(props) {
+            super(props);
+
+            console.log("constructor", props);
+        };
+        render() {
+            console.log('render');
+            return (
+                <div>
+                    <h2>
+                        Hello {this.props.name} - {this.state.age}
+                    </h2>
+                </div>
+            );
+        }
+        componentWillMount() {
+            console.log("componentWillMount");
+        }
+        conmonentDidMount() {
+            console.log("componentDidMount");
+
+            this.interval = setInterval(() => {
+                // console.log("setInterval");
+                this.setState(state => ({...state, age: state.age}));
+            }, 1000)
+        }
+        componentWillReceiveProps() {
+            console.log("componentWillReceiveProps", nextProps);
+        }
+        shouldComponentUpdate() {
+            console.log("shouldComponentUpdate", nextProps, nextState);
+
+            return true;
+
+            // return 을 해주어야 한다.
+            // return true; 함수가 끝나면 바로 render 할 준비를 한다.
+            // return false; 다음 단계로 넘어가지 않기 때문에 render를 하지 않는다. 그러므로 false 를 해놓으면 효율적으로 render를 처리할 수 있다.
+        }
+        componentWillUpdate(nextProps, nextState) {
+            console.log("componentWillUpdate", nextProps, nextState);
+        }
+
+        // render 가 시작
+        componentDidUpdate(prevProps, prevState) {
+            console.log("componentDidUpdate", prevProps, prevState);
+        }
+
+        componentWillUnmpunt() {
+            clearInterval(this.interval);
+        }
+    }
+
+    ReactDOM.render(<App name="Mark" />, document.querySelector('#root'));
+</script>
+```
+### :three: Component 언마운트
+- componentWillUnmpunt
+
+</div>
+</details>
+
+<details>
+<summary> :pencil: Component Lifecycle 변경 </summary>
+<div markdown="1">
+
+### :one: Component 생성 및 마운트
+- construtcor
+- ~~componentWillMound~~ => getDerivedStateFromProps
+- render
+- componentDidMount
+### :two: Component props, state 변경
+- ~~componentWillReceiveProps~~ => getDerivedStateFromProps
+- shouldComponentUpdate
+- render
+- ~~componentWillUpdate~~ => getSnapshotBeforeUpdate
+- componentDidUpdate
+
+```html
+<script type="text/babel">
+    const i = 0;
+    class Appp extends React.Component {
+        state = { list: [] };
+
+        render() {
+            return (
+                <div id="list" style={{height: 100, overflow: "scroll"}}>
+                    {this.state.lsit.map((i) => {
+                        return <div>{i}</div>
+                    })}
+                </div>
+            );
+        }
+
+        componentDidMount() {
+            setInterval(() => {
+                this.setState((state) => ({
+                    list: [..state.list, i++],
+                }));
+            }, 1000);
+        }
+
+        getSnapshotBeforUpdate(prevProps, prevState) {
+            if(prevState.list.length === this.state.list.length) return null; // 차이가 있으면 저장할 필요 없음
+            const list = document.querySelector('#list');
+            return list.scrollHeight - list.scrollTop; // snap 샷으로 저장해줌
+        }
+
+        componentDidUpdate(prevProps, prevState, snapshot) {
+            console.log(snapshot); // list.scrollHeight - list.scrollTop 결과값 출력
+            if (snapshot === null) return;
+            const list = document.querySelector('#list');
+            list.scrollTop = list.scrollHeight - snapshot; // 마지막 내용이 업데이트 되면 스크롤이 자동으로 내려감
+        }
+    }
+
+    ReactDOM.render(<App name="Mark" />, document.querySelector('#root'));
+</script>
+```
+### :pushpin: component 에러 캐치
+- componentDidCatch
+```html
+<script type="text/babel">
+    const i = 0;
+    class Appp extends React.Component {
+        state = {
+            hasError: false
+        };
+        render() {
+            if (this.state.hasError) {
+                return <div>예상치 못한 에러가 발생했습니다.</div>;
+            }
+            return <WebService />;
+        }
+
+        // WebService 에서 에러가 발생하는 것을 알아차리는 곳
+        componentDidCatch(error, info) {
+            this.setState({ hasError: true });
+        }
+    }
+
+    ReactDOM.render(<App name="Mark" />, document.querySelector('#root'));
+</script>
+```
+</div>
+</details>
+
+# :sunflower: React-study
+:open_file_folder: ch3. Creating React Project : 실제 현업에서 사용하는 프로젝트 제작하기
+
+<details>
+<summary> :pencil: 01. Create React App  </summary>
+<div markdown="1">
+
+## 사이트 접속하기
+[CRA](https://create-react-app.dev)
+- Facebook 의 오픈소스 이다.
+- React 도 facebook 에서 시작했다.
+- 그러므로 공식적인 tool 이라고 봐도 무방하다.
+![mainpage](img/CRA.png) 
+## 명령어 살펴보기
+### npx 
+npm 5.2.0 이상부터 함께 설치된 커맨드라인 명령어
+## 프로젝트 시작하기
+### :one: 프로젝트 만들기
+- node 기반의 프로젝트를 생성한다.
+```
+npx create-react-app 프로젝트 이름
+```
+```
+npx create-react-app tic-tac-toe
+```
+### :two: 프로젝트 접속
+- 프로젝트 생성 후 사이트로 확인하면 기본 세팅된 페이지가 나온다.
+```
+npm start
+```
+![react start](img/ReactStart.png) 
+### :three: 
+- 작업을 다 끝냈다면 최종적으로 배포할 준비를 해야한다.
+```
+npm run build
+```
+- 이 코드를 사용하면 컴파일을 실행하게 된다.
+- 컴파일 후 새로운 파일을 만들어 작은 파일로 관리한다.
+- 생성된 파일을 실행하려면 아래의 코드를 사용하면 된다.
+```
+npx serve -s build
+```
+- 개발 모드와 똑같은 결과로 사이트에 출력될 것이다.
+- 다만, 코드가 간단하게 작성되어 있다는 차이점이 있다.
+- 개발할 때 코드를 수정하면 자동으로 build 가 수정된다.
+```
+npm test
+```
+- creact-react-app 을 사용하지 않기 위해서는 아래의 코드를 comand 창에 입력한다.
+- 아래의 코드를 실행하면 package.json 파일이 변경된 것을 확인할 수 잇다.
+```
+npm run eject
+```
+</div>
+</details>
+
+
+<details>
+<summary> :pencil: 02. ESLint  </summary>
+<div markdown="1">
+
+</div>
+</details>
+
+
+<details>
+<summary> :pencil: 03. Prettier  </summary>
+<div markdown="1">
+
 </div>
 </details>
