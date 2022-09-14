@@ -882,8 +882,6 @@ class Comp extends React.Component {
 </div>
 </details>
 
-# :sunflower: React-study
-
 :open_file_folder: ch3. Creating React Project : 실제 현업에서 사용하는 프로젝트 제작하기
 
 <details>
@@ -1234,6 +1232,53 @@ $ npm i prettier -D
 <div markdown="1">
 
 [ReactDevelopTools 설치](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=ko)
+
+</div>
+</details>
+
+:open_file_folder: ch4. React Router
+
+<details>
+<summary> :pencil: 01. React 의 라우팅 이해하기 </summary>
+<div markdown="1">
+
+## SPA
+
+### Single Page Application
+
+![spa](img/spa.png)
+
+- 서버로부터 전체를 받아온 후에 browser 에서 어떤걸 받아올지 결정한다.
+- 서버로부터 각각의 페이지를 요청하는 것과 다르게 한번에 받아오고 url 에서 필요한 부분만 보여준다.
+
+### SPA 라우팅 과정
+
+1. 브라우저에서 최초에 '/' 경로로 요청하면,
+2. React Web App 을 내려준다.
+3. 내려받은 React App 에서 '/' 경로에 맞는 컴포넌트를 보여준다.
+4. React App 에서 다른 페이지로 이동하는 동작을 수행하면,
+5. 새로운 경로에 맞는 컴포넌트를 보여준다.
+
+<br>
+이러한 일을 해주는 패키지가 <b>react router</b>이다.
+
+### 설치방법
+
+```
+npm i react-router-dom
+```
+
+- cra 에 기본 내장된 패키지가 아니다.
+- react-router-dom 은 facebook 의 공시 패키지는 아니다.
+- 가장 대표적인 라우팅 패키지이다.
+
+### 프로젝트 시작하기
+
+```
+$ npx create-react-app react-router-example
+$ cd react-router-example/
+$ npm install react-router-dom
+```
 
 </div>
 </details>
