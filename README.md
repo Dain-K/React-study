@@ -1280,5 +1280,424 @@ $ cd react-router-example/
 $ npm install react-router-dom
 ```
 
+### src/App.js
+
+```js
+import { BrowserRouter, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import Profile from "./pages/Profile";
+import About from "./pages/About";
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Route path="/" exact component={Home} />
+      <Route path="/profile" component={Profile} />
+      <Route path="/about" component={About} />
+    </BrowserRouter>
+  );
+}
+
+export default App;
+```
+
+- Route 컴포넌트에 경로(path) 와 컴포넌트(componet) 를 성정하여 나열해준다.
+- BrowserRouter 로 Route 들을 감싸준다.
+- 브라우저에서 요청한 경로에 Route 의 path 가 들어있으면 해당 component 를 보여준다.
+
+### 에러가 발생하여 출력이 안 될 경우
+
+<b>버전 수정하기</b>
+
+```
+npm install react-router-dom@5.3.0
+```
+
+</div>
+</details>
+
+<details>
+<summary> :pencil: 02. Dynamic 라우팅 </summary>
+<div markdown="1">
+
+## Dynamic 라우팅
+
+동적으로 처리하여 component 보여주기
+
+### /scr/App.js
+
+```js
+import { BrowserRouter, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import Profile from "./pages/Profile";
+import About from "./pages/About";
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Route path="/" exact component={Home} />
+      <Route path="/profile" exact component={Profile} />
+      <Route path="/profile/:id" component={Profile} />
+      <Route path="/about" component={About} />
+    </BrowserRouter>
+  );
+}
+
+export default App;
+```
+
+### /src/Profile.jsx
+
+```jsx
+export default function Profile(props) {
+  const id = props.match.params.id;
+  console.log(id, typeof id);
+  // typeof id = string
+  return (
+    <div>
+      <h2>Profile 페이지입니다.</h2>
+      {id && <p>id 는 {id} 입니다.</p>}
+    </div>
+  );
+}
+```
+
+## ?key/value
+
+### :one: 브라우저에 내장되어 있는 객체로 접근하기
+
+#### About.js
+
+```js
+export default function About(props) {
+  console.log(props);
+  const searchParams = props.location.search;
+  console.log(searchParams);
+  const obj = new URLSearchParams(searchParams);
+  console.log(obj.get("name"));
+  return <div>About 페이지입니다.</div>;
+}
+```
+
+### :two: 라이브러리 사용하기
+
+#### comand
+
+```
+npm  i query-string
+```
+
+#### About.jsx
+
+```jsx
+import queryString from "query-string";
+
+export default function About(props) {
+  const searchParams = props.location.search;
+  console.log(searchParams);
+  const query = queryString.parse(searchParams);
+  console.log(query);
+  return (
+    <div>
+      <h2>About 페이지입니다.</h2>
+      {query.name && <p>name 은 {query.name} 입니다.</p>}
+    </div>
+  );
+}
+```
+
+</div>
+</details>
+
+<details>
+<summary> :pencil: 03. Switch 와 NotFound </summary>
+<div markdown="1">
+
+## Switch
+
+- 여러 Route 중 순서대로 먼저 맞는 하나만 보여준다.
+- exact 를 뺄 수 있는 로직을 만들 수 있다.
+- 가장 마지막에 어디 path 에도 맞지 않으면 보여지는 컴포넌트를 설정하여, "Not Found" 페이지를 만들 수 있다.
+
+### App.js
+
+```js
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import Home from "./pages/Home";
+import Profile from "./pages/Profile";
+import About from "./pages/About";
+import NotFound from "./pages/NotFound.jsx";
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Switch>
+        <Route path="/profile/:id" component={Profile} />s
+        <Route path="/profile" component={Profile} />
+        <Route path="/about" component={About} />
+        <Route path="/" exact component={Home} />
+        <Route component={NotFound} />
+      </Switch>
+    </BrowserRouter>
+  );
+}
+
+export default App;
+```
+
+### NotFound.jsx
+
+```jsx
+export default function NotFound() {
+  return <div>페이지를 찾을 수 없습니다.</div>;
+}
+```
+
+</div>
+</details>
+
+<details>
+<summary> :pencil: 04. JSX 링크로 라우팅 이동하기 (1) </summary>
+<div markdown="1">
+
+# JSX 링크로 라우팅 이동하기
+
+리액트 애플리케이션 내부에서 이동하는 벙법
+
+## 원래 코드
+
+```js
+import { BrowserRouter, Route, Switch, Link } from "react-router-dom";
+import Home from "./pages/Home";
+import Profile from "./pages/Profile";
+import About from "./pages/About";
+import NotFound from "./pages/NotFound.jsx";
+
+function App() {
+  return (
+    <BrowserRouter>
+      <a href="/">Home</a>
+      <Switch>
+        <Route path="/profile/:id" component={Profile} />
+        <Route path="/profile" component={Profile} />
+        <Route path="/about" component={About} />
+        <Route path="/" exact component={Home} />
+        <Route component={NotFound} />
+      </Switch>
+    </BrowserRouter>
+  );
+}
+
+export default App;
+```
+
+## Link 사용
+
+- 새로고침 안함
+
+```js
+import { BrowserRouter, Route, Switch, Link } from "react-router-dom";
+import Home from "./pages/Home";
+import Profile from "./pages/Profile";
+import About from "./pages/About";
+import NotFound from "./pages/NotFound.jsx";
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Link to="/">Home</Link>
+      <Switch>
+        <Route path="/profile/:id" component={Profile} />
+        <Route path="/profile" component={Profile} />
+        <Route path="/about" component={About} />
+        <Route path="/" exact component={Home} />
+        <Route component={NotFound} />
+      </Switch>
+    </BrowserRouter>
+  );
+}
+
+export default App;
+```
+
+## Link 사용 - 안에서 여러 경로 이용
+
+### src/App.js
+
+```js
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import Home from "./pages/Home";
+import Profile from "./pages/Profile";
+import About from "./pages/About";
+import NotFound from "./pages/NotFound";
+import Links from "./components/Links";
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Links />
+      <Switch>
+        <Route path="/profile/:id" component={Profile} />
+        <Route path="/profile" component={Profile} />
+        <Route path="/about" component={About} />
+        <Route path="/" exact component={Home} />
+        <Route component={NotFound} />
+      </Switch>
+    </BrowserRouter>
+  );
+}
+
+export default App;
+```
+
+### src/components/Links.jsx
+
+```jsx
+import { Link } from "react-router-dom";
+
+export default function Links() {
+  return (
+    <ul>
+      <li>
+        <Link to="/">Home</Link>
+      </li>
+      <li>
+        <Link to="/profile">Profile</Link>
+      </li>
+      <li>
+        <Link to="/profile/1">Profile/1</Link>
+      </li>
+      <li>
+        <Link to="/about">About</Link>
+      </li>
+      {/* <li>
+        <Link to="/about?name=mark">About?name=mark</Link>
+      </li> */}
+    </ul>
+  );
+}
+```
+
+</div>
+</details>
+
+<details>
+<summary> :pencil: 05. NavLink 링크로 라우팅 이동하기 (2) </summary>
+<div markdown="1">
+
+## NavLink 링크로 라우팅 이동하기
+
+- import {NavLink} from 'react-router-dom';
+- activeClassName, activeStyle 처럼 active 상태에 대한 스타일 지정이 가능하다.
+- Route 의 path 처럼 동작하기 때문에 exact 가 있다.
+
+### src/App.js
+
+```js
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import Home from "./pages/Home";
+import Profile from "./pages/Profile";
+import About from "./pages/About";
+import NotFound from "./pages/NotFound";
+import Links from "./components/Links";
+import NavLinks from "./components/NavLinks";
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Links />
+      <NavLinks />
+      <Switch>
+        <Route path="/profile/:id" component={Profile} />
+        <Route path="/profile" component={Profile} />
+        <Route path="/about" component={About} />
+        <Route path="/" exact component={Home} />
+        <Route component={NotFound} />
+      </Switch>
+    </BrowserRouter>
+  );
+}
+
+export default App;
+```
+
+### src/component/NavLinks.jsx
+
+```jsx
+import { NavLink } from "react-router-dom";
+
+const activeStyle = { color: "green" };
+
+export default function NavLinks() {
+  return (
+    <ul>
+      <li>
+        <NavLink to="/" exact activeStyle={activeStyle}>
+          Home
+        </NavLink>
+      </li>
+      <li>
+        <NavLink to="/profile" exact activeStyle={activeStyle}>
+          Profile
+        </NavLink>
+      </li>
+      <li>
+        <NavLink to="/profile/1" activeStyle={activeStyle}>
+          Profile/1
+        </NavLink>
+      </li>
+      <li>
+        <NavLink
+          to="/about"
+          activeStyle={activeStyle}
+          isActive={(match, location) => {
+            console.log(location);
+            return match !== null && location.search === "";
+          }}
+        >
+          About
+        </NavLink>
+      </li>
+      <li>
+        <NavLink
+          to="/about?name=mark"
+          activeStyle={activeStyle}
+          isActive={(match, location) => {
+            console.log(location);
+            return match !== null && location.search === "?name=mark";
+          }}
+        >
+          About?name=mark
+        </NavLink>
+      </li>
+    </ul>
+  );
+}
+```
+
+</div>
+</details>
+
+<details>
+<summary> :pencil: 06. JS 로 라우팅 이동하기 </summary>
+
+### App.js
+
+```js
+
+```
+
+### Login.jsx
+
+```jsx
+
+```
+
+### LoginButton.jsx
+
+```jsx
+
+```
+
 </div>
 </details>
