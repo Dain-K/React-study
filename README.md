@@ -1680,24 +1680,322 @@ export default function NavLinks() {
 
 <details>
 <summary> :pencil: 06. JS 로 라우팅 이동하기 </summary>
+<div markdown="1">
+
+## :one:
+
+아래의 코드를 사용할 경우 하위에 함수가 있을 때 오류가 발생할 수 있다.
 
 ### App.js
 
 ```js
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import Home from "./pages/Home";
+import Profile from "./pages/Profile";
+import About from "./pages/About";
+import NotFound from "./pages/NotFound";
+import Links from "./components/Links";
+import NavLinks from "./components/NavLinks";
+import Login from "./pages/Login";
 
+function App() {
+  return (
+    <BrowserRouter>
+      <Links />
+      <NavLinks />
+      <Switch>
+        <Route path="/login" component={Login} />
+        <Route path="/profile/:id" component={Profile} />
+        <Route path="/profile" component={Profile} />
+        <Route path="/about" component={About} />
+        <Route path="/" exact component={Home} />
+        <Route component={NotFound} />
+      </Switch>
+    </BrowserRouter>
+  );
+}
+
+export default App;
 ```
 
 ### Login.jsx
 
 ```jsx
-
+import LoginButton from "../components/LoginButton";
+export default function Login(props) {
+  return (
+    <div>
+      <h2>Login 페이지 입니다.</h2>
+      <LoginButton {...props} />
+    </div>
+  );
+}
 ```
 
 ### LoginButton.jsx
 
 ```jsx
+export default function LoginButton(props) {
+  console.log(props);
+  function login() {
+    setTimeout(() => {
+      props.history.push("/");
+    }, 1000);
+  }
+  return <button onClick={login}>로그인하기</button>;
+}
+```
+
+## :two: props 사용하지 않고 구현 - HOC 사용하기
+
+위에서 발생하는 문제를 해결할 수 있다.
+
+### Login.jsx
+
+```jsx
+import LoginButton from "../components/LoginButton";
+export default function Login() {
+  return (
+    <div>
+      <h2>Login 페이지 입니다.</h2>
+      <LoginButton />
+    </div>
+  );
+}
+```
+
+### LoginButton.jsx
+
+```jsx
+import { withRouter } from "react-router-dom";
+
+export default withRouter(function LoginButton(props) {
+  console.log(props);
+  function login() {
+    setTimeout(() => {
+      props.history.push("/");
+    }, 1000);
+  }
+  return <button onClick={login}>로그인하기</button>;
+});
+```
+
+</div>
+</details>
+
+<details>
+<summary> :pencil: 07. redirect </summary>
+<div markdown="1">
+
+## <Redirect />
+
+```js
+import { Redirect } from "react-router-dom";
+
+// jsx
+<Redirect to="" />;
+```
+
+## 코드로 살펴보기
+
+### App.js
+
+```js
+import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
+import Home from "./pages/Home";
+import Profile from "./pages/Profile";
+import About from "./pages/About";
+import NotFound from "./pages/NotFound";
+import Links from "./components/Links";
+import NavLinks from "./components/NavLinks";
+import Login from "./pages/Login";
+
+const isLogin = false;
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Links />
+      <NavLinks />
+      <Switch>
+        <Route
+          path="/login"
+          render={() => (isLogin ? <Redirect to="/" /> : <Login />)}
+        />
+        <Route path="/profile/:id" component={Profile} />
+        <Route path="/profile" component={Profile} />
+        <Route path="/about" component={About} />
+        <Route path="/" exact component={Home} />
+        <Route component={NotFound} />
+      </Switch>
+    </BrowserRouter>
+  );
+}
+
+export default App;
+```
+
+</div>
+</details>
+
+:open_file_folder: ch5. React Component Styling
+
+<details>
+<summary> :pencil: 01. Style Loaders </summary>
+<div markdown="1">
+
+## Style Loaders
+
+babel config: 어떤 문법을 번역할건지 설정
+wepack: 파일 확장자에 맞는 loader 에게 위임
+
+### 프로젝트 시작하기
 
 ```
+$ npx create-react-app style-loaders-example
+$ cd style-loaders-example/
+```
+
+### config/webpack.comfig.js 생성
+
+```
+$ npm run eject
+```
+
+## CSS (webpack.config.js)
+
+```js
+// "postcss" loader applies autoprefixer to our CSS.
+// "css" loader resolves paths in CSS and adds assets as dependencies.
+// "style" loader turns CSS into JS modules that inject <style> tags.
+// In production, we use MiniCSSExtractPlugin to extract that CSS
+// to a file, but in development "style" loader enables hot editing
+// of CSS.
+// By default we support CSS Modules with the extension .module.css
+{
+  test: cssRegex,
+  exclude: cssModuleRegex,
+  use: getStyleLoaders({
+    importLoaders: 1,
+    sourceMap: isEnvProduction
+      ? shouldUseSourceMap
+      : isEnvDevelopment,
+    modules: {
+      mode: 'icss',
+    },
+  }),
+  // Don't consider CSS imports dead code even if the
+  // containing package claims to have no side effects.
+  // Remove this when webpack adds a warning or an error for this.
+  // See https://github.com/webpack/webpack/issues/6571
+  sideEffects: true,
+},
+```
+
+<br>
+
+```js
+import "./App.css";
+```
+
+## CSS Module (webpack.config.js)
+
+```js
+// Adds support for CSS Modules (https://github.com/css-modules/css-modules)
+// using the extension .module.css
+{
+  test: cssModuleRegex,
+  use: getStyleLoaders({
+    importLoaders: 1,
+    sourceMap: isEnvProduction
+      ? shouldUseSourceMap
+      : isEnvDevelopment,
+    modules: {
+      mode: 'local',
+      getLocalIdent: getCSSModuleLocalIdent,
+    },
+  }),
+},
+```
+
+<br>
+
+```js
+import styles from "./App.modules.css";
+```
+
+## Sass (webpack.config.js)
+
+```js
+// Opt-in support for SASS (using .scss or .sass extensions).
+// By default we support SASS Modules with the
+// extensions .module.scss or .module.sass
+{
+  test: sassRegex,
+  exclude: sassModuleRegex,
+  use: getStyleLoaders(
+    {
+      importLoaders: 3,
+      sourceMap: isEnvProduction
+        ? shouldUseSourceMap
+        : isEnvDevelopment,
+      modules: {
+        mode: 'icss',
+      },
+    },
+    'sass-loader'
+  ),
+  // Don't consider CSS imports dead code even if the
+  // containing package claims to have no side effects.
+  // Remove this when webpack adds a warning or an error for this.
+  // See https://github.com/webpack/webpack/issues/6571
+  sideEffects: true,
+},
+```
+
+<br>
+
+```js
+import "./App.scss";
+import "./App.sass";
+```
+
+## Sass Module (webpack.config.js)
+
+```js
+// Adds support for CSS Modules, but using SASS
+// using the extension .module.scss or .module.sass
+{
+  test: sassModuleRegex,
+  use: getStyleLoaders(
+    {
+      importLoaders: 3,
+      sourceMap: isEnvProduction
+        ? shouldUseSourceMap
+        : isEnvDevelopment,
+      modules: {
+        mode: 'local',
+        getLocalIdent: getCSSModuleLocalIdent,
+      },
+    },
+    'sass-loader'
+  ),
+},
+```
+
+<br>
+
+```js
+import styles from "./App.module.scss";
+import styles from "./App.module.sass";
+```
+
+</div>
+</details>
+
+<details>
+<summary> :pencil: 02. CSS, SASS </summary>
+<div markdown="1">
 
 </div>
 </details>
