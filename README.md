@@ -1787,7 +1787,7 @@ export default withRouter(function LoginButton(props) {
 <summary> :pencil: 07. redirect </summary>
 <div markdown="1">
 
-## Redirect 
+## Redirect
 
 ```js
 import { Redirect } from "react-router-dom";
@@ -1996,6 +1996,196 @@ import styles from "./App.module.sass";
 <details>
 <summary> :pencil: 02. CSS, SASS </summary>
 <div markdown="1">
+
+## CSS, SASS
+
+### App.css
+
+```css
+.App {
+  text-align: center;
+}
+
+.App .logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App .logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App .header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App .link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+```
+
+### App.scss
+
+```scss
+.App {
+  text-align: center;
+
+  .logo {
+    height: 40vmin;
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .logo {
+      animation: App-logo-spin infinite 20s linear;
+    }
+  }
+
+  .header {
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+  }
+
+  .link {
+    color: #61dafb;
+  }
+
+  @keyframes App-logo-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}
+```
+
+</div>
+</details>
+
+<details>
+<summary> :pencil: 03. CSS module, SASS mobule </summary>
+<div markdown="1">
+
+## CSS module, SASS mobule
+
+### ./App.module.css
+
+- 실제 코드를 변환하여 스타일에 추가한다.
+- 원래 클래스 이름에서 변경된 클래스 이름으로 import 한다.
+
+## 분리된 형태로 사용하기
+
+### src/App.js
+
+```js
+import logo from "./logo.svg";
+// import "./App.css";
+// import "./App.scss";
+import styles from "./App.module.css";
+import Button from "./components/Button";
+
+// console.log(styles);
+// {
+//   App:"App_App__ukQSn"
+//   App-logo-spin: "App_App-logo-spin__nRPNK"
+//   header: "App_header__aHZhc"
+//   link: "App_link__RirLq"
+//   logo: "App_logo__J8xc0"
+// }
+
+function App() {
+  return (
+    <div className={[styles["App"]]}>
+      <header className={[styles["header"]]}>
+        <img src={logo} className={[styles["logo"]]} alt="logo" />
+        <p>
+          Edit <code>src/App.js</code> and save to reload.
+        </p>
+        <Button>Button</Button>
+      </header>
+    </div>
+  );
+}
+
+export default App;
+```
+
+### Button.jsx
+
+```jsx
+import styles from "./Button.module.css";
+
+const Button = (props) => <button className={styles["button"]} {...props} />;
+
+export default Button;
+```
+
+### src/component/Button.module.css
+
+```css
+.button {
+  background: transparent;
+  border-radius: 3px;
+  border: 2px solid palevioletred;
+  color: palevioletred;
+  margin: 0 1em;
+  padding: 0.25em 1em;
+  font-size: 20px;
+}
+```
+
+### loading 추가
+
+### Button.jsx
+
+```jsx
+
+```
+
+### src/component/Button.module.css
+
+```css
+.button {
+  background: transparent;
+  border-radius: 3px;
+  border: 2px solid palevioletred;
+  color: palevioletred;
+  margin: 0 1em;
+  padding: 0.25em 1em;
+  font-size: 20px;
+}
+
+.loading {
+  border: 2px solid grey;
+  color: grey;
+}
+```
 
 </div>
 </details>
