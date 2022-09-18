@@ -1787,7 +1787,7 @@ export default withRouter(function LoginButton(props) {
 <summary> :pencil: 07. redirect </summary>
 <div markdown="1">
 
-## <Redirect />
+## Redirect 
 
 ```js
 import { Redirect } from "react-router-dom";
@@ -1846,8 +1846,8 @@ export default App;
 
 ## Style Loaders
 
-babel config: 어떤 문법을 번역할건지 설정
-wepack: 파일 확장자에 맞는 loader 에게 위임
+- babel config: 어떤 문법을 번역할건지 설정
+- wepack: 파일 확장자에 맞는 loader 에게 위임
 
 ### 프로젝트 시작하기
 
