@@ -2160,12 +2160,45 @@ export default Button;
 }
 ```
 
-### loading 추가
+## loading 추가
 
 ### Button.jsx
 
 ```jsx
+import React from "react";
+import styles from "./Button.module.css";
 
+class Button extends React.Component {
+  state = {
+    loading: false,
+  };
+  render() {
+    return (
+      <button
+        onClick={this.startLoading}
+        className={
+          this.state.loading
+            ? `${styles["button"]} ${styles["loading"]}`
+            : styles["button"]
+        }
+        {...this.props}
+      />
+    );
+  }
+
+  startLoading = () => {
+    this.setState({
+      loading: true,
+    });
+    setTimeout(() => {
+      this.setState({
+        loading: false,
+      });
+    }, 1000);
+  };
+}
+
+export default Button;
 ```
 
 ### src/component/Button.module.css
@@ -2185,6 +2218,307 @@ export default Button;
   border: 2px solid grey;
   color: grey;
 }
+```
+
+## loading 추가 - classname 이용
+
+### 개발 서버
+
+```
+npm i classnames
+```
+
+### classNames
+
+```js
+console.log(classNames("foo", "bar"));
+console.log(classNames("foo", "bar", "baz"));
+
+console.log(classNames({ foo: true }, { bar: false }));
+console.log(classNames(null, false, "bar", undefined, 0, 1, { baz: null }, ""));
+console.log(classNames(styles["button"], styles["loading"]));
+```
+
+### Button.jsx
+
+```jsx
+import React from "react";
+import styles from "./Button.module.css";
+import classNames from "classnames";
+
+class Button extends React.Component {
+  state = {
+    loading: false,
+  };
+  render() {
+    return (
+      <button
+        onClick={this.startLoading}
+        className={classNames(styles["button"], {
+          loading: this.state.loading,
+        })}
+        {...this.props}
+      />
+    );
+  }
+
+  startLoading = () => {
+    this.setState({
+      loading: true,
+    });
+    setTimeout(() => {
+      this.setState({
+        loading: false,
+      });
+    }, 1000);
+  };
+}
+
+export default Button;
+```
+
+## loading 추가 - classname 이용 + bind 추가
+
+### Button.jsx
+
+```jsx
+import React from "react";
+import styles from "./Button.module.css";
+import classNames from "classnames/bind";
+
+const cx = classNames.bind(styles);
+
+console.log(cx("button", "loading"));
+
+class Button extends React.Component {
+  state = {
+    loading: false,
+  };
+
+  render() {
+    const { loading } = this.state;
+
+    return (
+      <button
+        onClick={this.startLoading}
+        className={cx("button", { loading })}
+        {...this.props}
+      />
+    );
+  }
+
+  startLoading = () => {
+    this.setState({
+      loading: true,
+    });
+    setTimeout(() => {
+      this.setState({
+        loading: false,
+      });
+    }, 1000);
+  };
+}
+
+export default Button;
+```
+
+</div>
+</details>
+
+<details>
+<summary> :pencil:  04. Styled Components (1) </summary>
+<div markdown="1">
+
+## Styled Components
+
+```
+$ npx create-react-app styled-components-example
+$ cd styled-components-example/
+$ npm i styled-components
+```
+
+### App.js
+
+```js
+import logo from "./logo.svg";
+import "./App.css";
+import StyledButton from "./components/StyledButton";
+
+function App() {
+  return (
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <p>
+          <StyledButton>버튼</StyledButton>
+        </p>
+      </header>
+    </div>
+  );
+}
+
+export default App;
+```
+
+### StyledButton.jsx
+
+```jsx
+import styled from "styled-components";
+const StyledButton = styled.button`
+  background: transparent;
+  border-radious: 3px;
+  border: 2px solid palevioletred;
+  color: palevioletred;
+  margin: 0 1em;
+  padding: 0.25em 1em;
+  font-size: 20px;
+`;
+
+export default StyledButton;
+```
+
+</div>
+</details>
+
+<details>
+<summary> :pencil:  05. Styled Components (2) </summary>
+<div markdown="1">
+
+## Styled Components
+
+- 다른 스타일이 방해를 주지 않는다는 장점이 있다.
+- 하지만 전역적으로 처리하기에는 어려움이 있다.
+
+### App.js
+
+```js
+import logo from "./logo.svg";
+import "./App.css";
+import StyledButton from "./components/StyledButton";
+import styled, { createGlobalStyle } from "styled-components";
+import StyledA from "./components/StyledA";
+
+const PrimaryStyledButton = styled(StyledButton)`
+  background: palevioletred;
+  color: white;
+`;
+
+const UppercaseButton = (props) => (
+  <button {...props} children={props.children.toUpperCase()} />
+);
+
+const MyButton = (props) => (
+  <button className={props.className} children={`MyButton ${props.children}`} />
+);
+
+const StyledMyButton = styled(MyButton)`
+  background: transparent;
+  border-radious: 3px;
+  border: 2px solid ${(props) => props.color || "palevioletred"};
+  color: ${(props) => props.color || "palevioletred"};
+  margin: 0 1em;
+  padding: 0.25em 1em;
+  font-size: 20px;
+
+  :hover {
+    border: 2px solid red;
+  }
+
+  ::before {
+    content: "@";
+  }
+`;
+
+const GlobalStyle = createGlobalStyle`
+button {
+  color: yellow;
+}
+`;
+
+function App() {
+  return (
+    <div className="App">
+      <GlobalStyle />
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <p>
+          <StyledButton>버튼</StyledButton>
+          <StyledButton primary>버튼</StyledButton>
+          <PrimaryStyledButton>버튼</PrimaryStyledButton>
+          <StyledButton as="a" href="/">
+            버튼
+          </StyledButton>
+          <StyledButton as={UppercaseButton}>button</StyledButton>
+          <StyledMyButton color="green">button</StyledMyButton>
+          <StyledA href="https://google.com">태그</StyledA>
+        </p>
+      </header>
+    </div>
+  );
+}
+
+export default App;
+```
+
+### StyledButton.jsx
+
+```jsx
+import styled, { css } from "styled-components";
+
+const StyledButton = styled.button`
+  background: transparent;
+  border-radious: 3px;
+  border: 2px solid palevioletred;
+  color: palevioletred;
+  margin: 0 1em;
+  padding: 0.25em 1em;
+  font-size: 20px;
+
+  ${(props) =>
+    props.primary &&
+    css`
+      background: palevioletred;
+      color: white;
+    `}
+`;
+
+export default StyledButton;
+```
+
+### StyledA.jsx
+
+```jsx
+import styled from "styled-components";
+const StyledA = styled.a.attrs((props) => ({
+  target: "_BLANK",
+}))`
+  color: ${(props) => props.color};
+`;
+
+export default StyledA;
+```
+
+</div>
+</details>
+
+<details>
+<summary> :pencil:  06. React Shadow </summary>
+<div markdown="1">
+
+## 웹 컴포넌트
+
+### 커스텀 앨리먼트
+
+- Custom elements
+- Shadow DOM: 충돌에 대한 걱정 없이 스크립트와 스타일을 작성할 수 있다.
+- HTML, 탬플릿
+
+## 프로젝트 시작
+
+```
+$ npx create-react-app react-shadow-example
+$ cd react-shadow-example/
+$ npm i react-shadow
 ```
 
 </div>
