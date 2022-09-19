@@ -2523,3 +2523,528 @@ $ npm i react-shadow
 
 </div>
 </details>
+
+<details>
+<summary> :pencil:  07. andt Design </summary>
+<div markdown="1">
+
+## 프로젝트 시작
+
+```
+$ npx create-react-app antd-example
+$ cd antd-example/
+$ npm i antd
+```
+
+### :one: 전역 스타일 추가
+
+- antd 가 css 를 포함하는 작업을 해줘야함
+
+#### index.js
+
+```js
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "antd/dist/antd.css"; // 전역 스타일 추가
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+```
+
+### :two: antd 디자인 사용하기
+
+#### App.js
+
+```js
+import logo from "./logo.svg";
+import "./App.css";
+import { Calendar } from "antd";
+
+function App() {
+  return (
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <p>
+          <GithubOutlined />
+        </p>
+        <Calendar fullscreen={false} />
+      </header>
+    </div>
+  );
+}
+
+export default App;
+```
+
+### :three: 아이콘 패키지 추가
+
+#### console
+
+```
+$ npm install --save @ant-design/icons
+```
+
+#### App.js
+
+```js
+import logo from "./logo.svg";
+import "./App.css";
+import { Calendar } from "antd";
+import { GithubOutlined } from "@ant-design/icons";
+
+function App() {
+  return (
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <p>
+          <GithubOutlined />
+        </p>
+        <Calendar fullscreen={false} />
+      </header>
+    </div>
+  );
+}
+
+export default App;
+```
+
+</div>
+</details>
+
+:open_file_folder: ch6. 리액트 실전 활용
+
+<details>
+<summary> :pencil:  01. High Order Component </summary>
+<div markdown="1">
+
+## HOC(Higher Order Component)
+
+HOC는 function 과 같다.
+
+```js
+HOC = function{컴포넌트} { return 새로운 컴포넌트; }
+```
+
+HOC는 <컴포넌트>를 인자로 받아 <새로운 컴포넌트>를 리턴하는 함수
+<br> 하지만 사용한 적이 있다.
+
+### withRouter()
+
+보통 with 가 붙은 함수가 HOC 인 경우가 많다.
+
+```js
+export default withRouter(LoginButton);
+```
+
+```js
+import React from "react";
+import { withRouter } from "react-router-dom";
+
+cosnt LoginButton = props => {
+  console.log(props);
+  function login() {
+    setTimeout(() => {
+      props.history.push("/");
+    }, 1000);
+  }
+  return <button onClick={login}>로그인하기</button>;
+};
+
+export default withRouter(LoginButton);
+```
+
+## 사용하는 법
+
+- Use HOCs For Cross-Cutting Concerns
+- Don't Mutate the Original Component. Use Composition
+- Pass Unrelated Props Through to the Wrapped Component
+- Maximizing Composability
+- Wrap the Display Name for Easy Debugging
+
+## 주의할 점
+
+- Don't Use HOCs Inside the render Method
+- Static Methods Must Be Copied Over
+- Refs Aren't Passed Through (feat. React.forwardRef)
+
+## github
+
+hoist-non-react-statics
+
+</div>
+</details>
+
+<details>
+<summary> :pencil:  02. Controlled Component와 Uncontrolled Component </summary>
+<div markdown="1">
+
+## 상태를 가지고 있는 element
+
+- input
+- select
+- textarea
+- ...
+
+## element 의 상태를 누가 관리하느냐에 따라
+
+- 엘리먼트를 가지고 잇는 컴포넌트가 관리
+  - controlled
+- 엘리먼트의 상태를 관리하지 않고, 엘리먼트의 참조만 컴포넌트가 소유
+  - [Uncontrolled](https://reactjs.org/docs/uncontrolled-components.html)
+
+## Controlled Component
+
+### ControlledComponent.jsx
+
+```jsx
+import React from "react";
+class ControlledComponent extends React.Component {
+  state = {
+    value: "",
+  };
+  render() {
+    const { value } = this.state;
+    return (
+      <div>
+        <input value={value} onChange={this.change} />
+        <button onClick={this.click}>전송</button>
+      </div>
+    );
+  }
+  change = (e) => {
+    console.log(e.target.value);
+
+    this.setState({ value: e.target.value });
+  };
+  click = () => {
+    console.log(this.state.value);
+  };
+}
+
+export default ControlledComponent;
+```
+
+### App.js
+
+```js
+import logo from "./logo.svg";
+import "./App.css";
+import ControlledComponent from "./components/ControlledComponent";
+
+function App() {
+  return (
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <ControlledComponent />
+      </header>
+    </div>
+  );
+}
+
+export default App;
+```
+
+## Uncontrolled Component
+
+### App.js
+
+```js
+import logo from "./logo.svg";
+import "./App.css";
+import ControlledComponent from "./components/ControlledComponent";
+import UncontrolledComponent from "./components/UncontrolledComponent";
+
+function App() {
+  return (
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <ControlledComponent />
+        <UncontrolledComponent />
+      </header>
+    </div>
+  );
+}
+
+export default App;
+```
+
+### UncontrolledComponent.jsx
+
+```jsx
+import React from "react";
+
+class UncontrolledComponent extends React.Component {
+  render() {
+    return (
+      <div>
+        <input id="my-input" />
+        <button onClick={this.click}>전송</button>
+      </div>
+    );
+  }
+
+  click = () => {
+    // input 엘리먼트의 현재 상태 값을 꺼내서 전송한다.
+    const input = document.querySelector("#my-input");
+    console.log(input.value);
+  };
+}
+
+export default UncontrolledComponent;
+```
+
+위 코드의 방법은 지양한다. 그러므로 아래의 코드를 사용하는 것이 좋다.
+
+### UncontrolledComponent.jsx
+
+```jsx
+import React from "react";
+
+class UncontrolledComponent extends React.Component {
+  inputRef = React.createRef();
+
+  render() {
+    console.log("initial render", this.inputRef);
+    return (
+      <div>
+        <input ref={this.inputRef} />
+        <button onClick={this.click}>전송</button>
+      </div>
+    );
+  }
+
+  componentDidMount() {
+    console.log("componentDidMout", this.inputRef);
+  }
+
+  click = () => {
+    // input 엘리먼트의 현재 상태 값을 꺼내서 전송한다.
+    // const input = document.querySelector("#my-input");
+    // console.log(input.value);
+    console.log(this.inputRef.current.value);
+  };
+}
+
+export default UncontrolledComponent;
+```
+
+상황에 따라 다르게 사용하여야 한다.
+
+</div>
+</details>
+
+:open_file_folder: ch7. Hooks & Content
+
+<details>
+<summary> :pencil: 01. Basic Hooks </summary>
+<div markdown="1">
+
+## Basic Hooks
+
+- useState
+  - state 를 대체 할 수 있다.
+- useEffect
+  - 라이프 사이클 훅을 대체할 수 잇다.
+    - componentDidMount
+    - componentDidUpdate
+    - componentWillUnmount
+- useContext (Content API 에서 자세히... )
+
+## Hooks 에 대해
+
+[Hooks에 대한 내용](https://reactjs.org/docs/hooks-intro.html)
+
+- react hook 은 내부에 설정 되어 있으므로 따로 설치하지 않아도 된다.
+
+### App.js
+
+### Example1.jsx
+
+```jsx
+import React from "react";
+
+export default class Example1 extends React.Component {
+  state = { count: 0 };
+
+  render() {
+    const { count } = this.state;
+
+    return (
+      <div>
+        <p>Example1: You clicked {count} times !!!</p>
+        <button onClick={this.click}>Click me</button>
+      </div>
+    );
+  }
+
+  click = () => {
+    this.setState({ count: this.state.count + 1 });
+  };
+}
+```
+
+### Example2.jsx
+
+```jsx
+import React from "react";
+
+export default function Example2() {
+  const [count, setCount] = React.useState(0); // 배열형태
+  return (
+    <div>
+      <p>Example2: You clicked {count} times !!!</p>
+      <button onClick={click}>Click me</button>
+    </div>
+  );
+
+  function click() {
+    setCount(count + 1);
+  }
+}
+```
+
+### Example3.jsx
+
+```jsx
+import React from "react";
+
+// useState => count
+// useState => { count:0 };
+export default function Example3() {
+  const [state, setState] = React.useState({ count: 0 });
+  return (
+    <div>
+      <p>Example3: You clicked {state.count} times !!!</p>
+      <button onClick={click}>Click me</button>
+    </div>
+  );
+
+  function click() {
+    // setState({ count: state.count + 1 });
+    setState((state) => {
+      return {
+        count: state.count + 1,
+      };
+    });
+  }
+}
+```
+
+### Example4.jsx
+
+```jsx
+import React from "react";
+
+export default class Example4 extends React.Component {
+  state = { count: 0 };
+
+  render() {
+    const { count } = this.state;
+
+    return (
+      <div>
+        <p>Example4: You clicked {count} times !!!</p>
+        <button onClick={this.click}>Click me</button>
+      </div>
+    );
+  }
+
+  // 최초 렌더가 발생한 직후에 componentDidMount
+  componentDidMount() {
+    console.log("componentDidMount", this.state.count);
+  }
+
+  componentDidUpdate() {
+    console.log("componentDidUpdate", this.state.count);
+  }
+
+  click = () => {
+    this.setState({ count: this.state.count + 1 });
+  };
+}
+```
+
+### Example5.jsx
+
+```jsx
+import React from "react";
+
+export default function Example5() {
+  const [count, setCount] = React.useState(0); // 배열형태
+
+  // 항상 실행
+  //   React.useEffect(() => {
+  //     console.log("componentDidMount & componentDidUpdate", count);
+  //   });
+
+  // 최초에만 실행
+  React.useEffect(() => {
+    // render 가 된 직후
+    console.log("componentDidMount");
+
+    return () => {
+      // cleanup
+      // ComponentWillUnmount
+    };
+  }, []);
+
+  React.useEffect(() => {
+    console.log("componentDidMount & componentDidUpdate by count", count);
+    return () => {
+      // cleanup
+      console.log("cleanup by count", count);
+    };
+  }, [count]);
+
+  return (
+    <div>
+      <p>Example5: You clicked {count} times !!!</p>
+      <button onClick={click}>Click me</button>
+    </div>
+  );
+
+  function click() {
+    setCount(count + 1);
+  }
+}
+```
+
+</div>
+</details>
+
+<details>
+<summary> :pencil: 02. Custom Hooks </summary>
+<div markdown="1">
+
+</div>
+</details>
+
+<details>
+<summary> :pencil: 03. Additional Hooks </summary>
+<div markdown="1">
+
+</div>
+</details>
+
+<details>
+<summary> :pencil: 04. React Router Hooks </summary>
+<div markdown="1">
+
+</div>
+</details>
