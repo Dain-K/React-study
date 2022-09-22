@@ -3036,7 +3036,229 @@ export default function Example5() {
 
 나만의 Hokks 을 만들어보기
 
+- hook의 특징은 hook 또는 함수 안에서만 실행이 가능하다.
+
 ## 브라우저의 가로창이 변경되었을 때 숫자 받아오기
+
+- src/hooks/useWindowWidth.js 만들기
+
+```js
+import React, { useEffect } from "react";
+
+export default function useWindowWidth() {
+  // 초기값은 최초의 가로창
+  const [width, setWidth] = React.useState(window.innerWidth);
+
+  useEffect(() => {
+    const resize = () => {
+      setWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", resize);
+
+    // 사용 안할 때는 해지
+    // clean up
+    return () => {
+      window.removeEventListener("resize", resize);
+    };
+  });
+
+  return width;
+}
+```
+
+### App.js
+
+```js
+import logo from "./logo.svg";
+import "./App.css";
+import Example1 from "./components/Example1";
+import Example2 from "./components/Example2";
+import Example3 from "./components/Example3";
+import Example4 from "./components/Example4";
+import Example5 from "./components/Example5";
+import useWindowWidth from "./hooks/useWindowWidth";
+
+function App() {
+  const width = useWindowWidth();
+
+  return (
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        {/* <Example1 />
+        <Example2 />
+        <Example3 />
+        <Example4 /> */}
+        <Example5 />
+        {width} {/*현재 브라우저의 초기값*/}
+      </header>
+    </div>
+  );
+}
+
+export default App;
+```
+
+## 최초에 설정되고 최후에 사라지도록 하기
+
+### useWindowWidth.js
+
+```js
+import { useState, useEffect } from "react";
+
+export default function useWindowWidth() {
+  // 초기값은 최초의 가로창
+  const [width, setWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const resize = () => {
+      setWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", resize);
+
+    // 사용 안할 때는 해지
+    // clean up
+    return () => {
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+
+  return width;
+}
+```
+
+### App.js
+
+```js
+import logo from "./logo.svg";
+import "./App.css";
+import Example1 from "./components/Example1";
+import Example2 from "./components/Example2";
+import Example3 from "./components/Example3";
+import Example4 from "./components/Example4";
+import Example5 from "./components/Example5";
+import useWindowWidth from "./hooks/useWindowWidth";
+
+function App() {
+  const width = useWindowWidth();
+
+  return (
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        {/* <Example1 />
+        <Example2 />
+        <Example3 />
+        <Example4 /> */}
+        <Example5 />
+        {width} {/*현재 브라우저의 초기값*/}
+      </header>
+    </div>
+  );
+}
+
+export default App;
+```
+
+## useHaseMounted us withHasMounted
+
+### src/hooks/useHasMounded.js
+
+```js
+import { useEffect, useState } from "react";
+
+export default function useHaseMounted() {
+  const [hasMounted, setHasMounted] = useState(false);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  return hasMounted;
+}
+```
+
+### App.js
+
+```js
+import logo from "./logo.svg";
+import "./App.css";
+import useWindowWidth from "./hooks/useWindowWidth";
+import withHasMounted from "./hocs/withHasMounted";
+import useHaseMounted from "./hooks/useHasMounted";
+
+function App({ hasMounted }) {
+  const width = useWindowWidth();
+  const hasMountedFromHooks = useHaseMounted();
+
+  console.log(hasMounted, hasMountedFromHooks);
+
+  return (
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        {width} {/*현재 브라우저의 초기값*/}
+      </header>
+    </div>
+  );
+}
+
+export default withHasMounted(App);
+```
+
+### src/hocs/withHasMounted.jsx
+
+```jsx
+import React from "react";
+
+export default function withHasMounted(Component) {
+  class NewComponent extends React.Component {
+    state = {
+      hasMounted: false,
+    };
+    render() {
+      const { hasMounted } = this.state;
+      return <Component {...this.props} hasMounted={hasMounted} />;
+    }
+    // 렌더가 된 지후 실행
+    componentDidMount() {
+      this.setState({ hasMounted: true });
+    }
+  }
+
+  NewComponent.displayName = `withHasMounted(${Component.name})`;
+
+  return NewComponent;
+}
+```
+
+### App.js
+
+```js
+import logo from "./logo.svg";
+import "./App.css";
+import useWindowWidth from "./hooks/useWindowWidth";
+import withHasMounted from "./hocs/withHasMounted";
+
+function App({ hasMounted }) {
+  const width = useWindowWidth();
+
+  console.log(hasMounted);
+
+  return (
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        {width} {/*현재 브라우저의 초기값*/}
+      </header>
+    </div>
+  );
+}
+
+export default withHasMounted(App);
+```
 
 </div>
 </details>
@@ -3044,6 +3266,112 @@ export default function Example5() {
 <details>
 <summary> :pencil: 03. Additional Hooks </summary>
 <div markdown="1">
+
+## useReducer
+
+- 다수의 하윗값을 포함하는 복잡한 정적 로직을 만드는 경우
+- 다음 state 가 이전 state 에 의존적인 경우
+- Redux를 안다면 쉽게 사용 가능
+
+### Example6.jsx
+
+```jsx
+import { useReducer } from "react";
+
+// reducer => state 를 변경하는 로직이 담겨 있는 함수
+const reducer = (state, action) => {
+  if (action.type === "PLUS") {
+    return {
+      count: state.count + 1,
+    };
+  }
+  return state;
+};
+
+// dispatch => action 객체를 넣어서 실행
+
+// action => 객체이고 필수 프로퍼티로 type을 가진다.
+
+export default function Example6() {
+  const [state, dispatch] = useReducer(reducer, { count: 0 });
+
+  return (
+    <div>
+      <p>You clicked {state.count} thimes</p>
+      <button onClick={click}>Click me</button>
+    </div>
+  );
+
+  function click() {
+    dispatch({ type: "PLUS" });
+  }
+}
+```
+
+### Example7.jsx
+
+```jsx
+import { useCallback, useMemo, useState } from "react";
+
+function sum(persons) {
+  console.log("sum...");
+  return persons.map((person) => person.age).reduce((l, r) => l + r, 0);
+}
+
+export default function Example7() {
+  const [value, setValue] = useState("");
+  const [persons] = useState([
+    { name: "MArk", age: 39 },
+    { name: "Hanna", age: 28 },
+  ]);
+
+  const count = useMemo(() => {
+    return sum(persons);
+  }, [persons]);
+
+  const click = useCallback(() => {
+    console.log(value);
+  }, []); // 최초에만 함수가 생성되도록
+
+  return (
+    <div>
+      <input value={value} onChange={change} />
+      <p>{count}</p>
+      <button onClick={click}>click</button>
+    </div>
+  );
+  function change(e) {
+    setValue(e.target.value);
+  }
+}
+```
+
+## creactRef, useRef
+
+### Example8.jsx
+
+```jsx
+import { createRef, useRef, useState } from "react";
+
+export default function Example8() {
+  const [value, setValue] = useState("");
+  const input1Ref = createRef();
+  const input2Ref = useRef();
+
+  console.log(input1Ref.current, input2Ref.current);
+
+  return (
+    <div>
+      <input value={value} onChange={change} />
+      <input ref={input1Ref} />
+      <input ref={input2Ref} />
+    </div>
+  );
+  function change(e) {
+    setValue(e.target.value);
+  }
+}
+```
 
 </div>
 </details>
