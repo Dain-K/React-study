@@ -3380,5 +3380,80 @@ export default function Example8() {
 <summary> :pencil: 04. React Router Hooks </summary>
 <div markdown="1">
 
+### react-router-example/src/components/LoginButtn.jsx
+
+원래 작성한 코드
+
+- WithRouter 을 이용하여 props 를 전달
+
+```jsx
+import { withRouter } from "react-router-dom";
+
+export default withRouter(function LoginButton(props) {
+  console.log(props);
+  function login() {
+    setTimeout(() => {
+      props.history.push("/");
+    }, 1000);
+  }
+  return <button onClick={login}>로그인하기</button>;
+});
+```
+
+이 코드를 아래와 같이 변경하면 props 로 들어오지 않기 때문에 에러가 난다.
+
+```jsx
+import { withRouter } from "react-router-dom";
+
+export default function LoginButton(props) {
+  console.log(props);
+  function login() {
+    setTimeout(() => {
+      props.history.push("/");
+    }, 1000);
+  }
+  return <button onClick={login}>로그인하기</button>;
+}
+```
+
+아래와 같이 변경하면 오류를 없앨 수 있다.
+
+- history 사용하기
+
+```jsx
+import { useHistory } from "react-router-dom";
+
+export default function LoginButton(props) {
+  const history = useHistory();
+  console.log(props);
+  function login() {
+    setTimeout(() => {
+      history.push("/");
+    }, 1000);
+  }
+  return <button onClick={login}>로그인하기</button>;
+}
+```
+
+### react-router-example/src/pages/Profile.jsx
+
+- porps 대신 hook을 이용하여 구현하기
+
+```jsx
+import { useParams } from "react-router";
+
+export default function Profile() {
+  const params = useParams();
+  const id = params.id;
+  console.log(id, typeof id);
+  return (
+    <div>
+      <h2>Profile 페이지입니다.</h2>
+      {id && <p>id 는 {id} 입니다.</p>}
+    </div>
+  );
+}
+```
+
 </div>
 </details>
