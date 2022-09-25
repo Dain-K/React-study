@@ -3457,3 +3457,10 @@ export default function Profile() {
 
 </div>
 </details>
+
+<details>
+<summary> :pencil: 05. 텀포넌트 간 통신 </summary>
+<div markdown="1">
+
+</div>
+</details>
