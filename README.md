@@ -3459,8 +3459,151 @@ export default function Profile() {
 </details>
 
 <details>
-<summary> :pencil: 05. 텀포넌트 간 통신 </summary>
+<summary> :pencil: 05. 컴포넌트 간 통신 </summary>
 <div markdown="1">
+
+## 하위 컴포넌트 변경하기
+
+A 의 button 를 클릭하여 E 를 변경하려면
+
+1. `<A />` 컴포넌트에서 button 에 onClick 이벤트를 만들고,
+2. button 을 클릭하면, `<A />`의 state 를 변경하여, `<B />` 로 내려주는 props를 변경
+3. `<B />` 의 props 가 변경되면, `<C />` 의 props 에 전달
+4. `<C />` 의 props 가 변경되면, `<D />` 의 props로 전달
+5. `<D />` 의 props 가 변경되면, `<E />` 의 props 로 전달
+
+```jsx
+import { useState } from "react";
+
+export default function A() {
+  const [value, setValue] = useState("아직 안바뀜");
+  return (
+    <div>
+      <B value={value} />
+      <button onClick={click}>E 의 값을 바꾸기</button>
+    </div>
+  );
+  function click() {
+    setValue("E 의 값을 변경");
+  }
+}
+
+function B({ value }) {
+  return (
+    <div>
+      <p>여긴 B</p>
+      <C value={value} />
+    </div>
+  );
+}
+function C({ value }) {
+  return (
+    <div>
+      <p>여긴 C</p>
+      <D value={value} />
+    </div>
+  );
+}
+function D({ value }) {
+  return (
+    <div>
+      <p>여긴 D</p>
+      <E value={value} />
+    </div>
+  );
+}
+function E({ value }) {
+  return (
+    <div>
+      <p>여긴 E</p>
+      <h3>{value}</h3>
+    </div>
+  );
+}
+```
+
+## 상위 컴포넌트를 변경하기
+
+E 의 button 를 클릭하여 A 의 p 를 변경하려면
+
+1. `<A />` 에 함수를 만들고, 그 함수 안에 state 를 변경하도록 구현, 그 변경으로 인해 p 안의 내용을 변경
+2. 만들어진 함수를 props 에 넣어서 `<B />` 로 전달
+3. `<B />` 의 props 의 함수를 `<C />` 의 props 로 전달
+4. `<C />` 의 props 의 함수를 `<D /> `의 props 로 전달
+5. `<D />` 의 props 의 함수를 `<E />` 의 props 로 전달, `<E />` 에서 클릭하면 props 로 받은 함수를 실행
+
+```jsx
+export default function A() {
+  const [value, setValue] = useState("아직 안바뀜");
+  return (
+    <div>
+      <p>{value}</p>
+      <B setValue={setValue} />
+    </div>
+  );
+}
+function B({ setValue }) {
+  return (
+    <div>
+      <p>여긴 B</p>
+      <C setValue={setValue} />
+    </div>
+  );
+}
+function C({ setValue }) {
+  return (
+    <div>
+      <p>여긴 C</p>
+      <D setValue={setValue} />
+    </div>
+  );
+}
+function D({ setValue }) {
+  return (
+    <div>
+      <p>여긴 D</p>
+      <E setValue={setValue} />
+    </div>
+  );
+}
+function E({ setValue }) {
+  return (
+    <div>
+      <p>여긴 E</p>
+      <button onClick={click}>클릭</button>
+    </div>
+  );
+
+  function click() {
+    setValue("A 의 값을 변경");
+  }
+}
+```
+
+</div>
+</details>
+
+<details>
+<summary> :pencil: 06. Context API </summary>
+<div markdown="1">
+
+Context API는 리액트에 내장되어 있으므로 따로 설치할 필요가 없다.
+
+## 하위 컴포넌트 전체에 데이터를 공유하는 법
+
+- 데이터를 set 하는 놈
+  - 가장 상위 컴포넌트 => 프로바이더
+- 데이터를 get 하는 놈
+  - 모든 하위 컴포넌트에서 접근 가능
+    - 컴슈머로 하는 방법
+    - 클래스 컴포넌트의 this.context 로 하는 방법
+    - 핑셔널 컴포넌트의 useContext 로 하는 방법
+
+## 데이터를 Set 하기
+
+1. 일단 컨텍스트를 생성한다.
+2. 컨텍스트 프로바이더를 사용한다.
+3. value 를 사용
 
 </div>
 </details>
