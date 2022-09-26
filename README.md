@@ -3605,5 +3605,245 @@ Context API는 리액트에 내장되어 있으므로 따로 설치할 필요가
 2. 컨텍스트.프로바이더를 사용한다.
 3. value 를 사용
 
+### index.js
+
+```js
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import PersonContext from "./contexts/PersonContext";
+
+const persons = [
+  { id: 0, name: "Mark", age: 39 },
+  { id: 1, name: "Hanna", age: 29 },
+];
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
+  <React.StrictMode>
+    <PersonContext.Provider value={persons}>
+      <App />
+    </PersonContext.Provider>
+  </React.StrictMode>
+);
+
+reportWebVitals();
+```
+
+### PersonContext.js
+
+```js
+import React from "react";
+
+const PersonContext = React.createContext();
+
+export default PersonContext;
+```
+
+## 데이터를 Get 하기(1) - Consumer
+
+1. 컨텍스트를 가져온다.
+2. 컨텍스트.컨슈머를 사용한다.
+3. value 를 사용
+
+### example1.js
+
+```js
+import PersonContext from "../contexts/PersonContext";
+
+export default function Example1() {
+  return (
+    <PersonContext.Consumer>
+      {(persons) => (
+        <ul>
+          {persons.map((person) => (
+            <li>{person.name}</li>
+          ))}
+        </ul>
+      )}
+    </PersonContext.Consumer>
+  );
+}
+```
+
+## 데이터를 Get 하기 (2) - class
+
+1. static contextType 에 컨텍스트를 설정한다.
+2. this.context => value 이다.
+
+### Example2.jsx
+
+```jsx
+import React from "react";
+import PersonContext from "../contexts/PersonContext";
+
+export default class Example2 extends React.Component {
+  static contextType = PersonContext;
+  // 1개만 지정할 수 있다는 단점이 있음
+
+  render() {
+    const persons = this.context;
+    return (
+      <ul>
+        {persons.map((person) => (
+          <li>{person.name}</li>
+        ))}
+      </ul>
+    );
+  }
+}
+
+// Example2.contextType = PersonContext;
+```
+
+## 데이터를 Get 하기 (3) - functional
+
+1. useContext 로 컨텍스트를 인자로 호출
+2. useContext 의 리턴이 value 이다.
+
+### Example3.jsx
+
+```jsx
+import { useContext } from "react";
+import PersonContext from "../contexts/PersonContext";
+
+export default function Example3() {
+  const persons = useContext(PersonContext);
+  return (
+    <ul>
+      {persons.map((person) => (
+        <li>{person.name}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
 </div>
 </details>
+
+:open_file_folder: ch8. React Testing
+
+<details>
+<summary> :pencil: 01. Javascript Unit Test & Jest 사용하기  </summary>
+<div markdown="1">
+
+## Test 프레임 워크
+
+Jest
+
+## facebook/jest
+
+- 리액트의 영향이 크겠지만 가장 핫한 테스트 도구
+- Easy shouldComponentUpdate
+- Instant Feedback
+  - 고친 파일만 빠르게 테스트 다시 해주는 기능 등
+- Snapshot Testing
+  - 컴포넌트 테스트에 중요한 역할을 하는 스냅샷
+
+## 프로젝트 시작하기
+
+```
+$ npm init -y
+$ npm i jest -D
+```
+
+### 항상 test 가 켜진 상태로 확인
+
+```
+$ npx jest --watchAll
+```
+
+### package.json
+
+```json
+{
+  "name": "jest-example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^29.0.3"
+  }
+}
+```
+
+### example.test.js
+
+```js
+describe("expect test", () => {
+  it("37 to equal 37", () => {
+    expect(37).toBe(37);
+  });
+  it("{age: 39} to equal {age: 39}", () => {
+    expect({ age: 39 }).toEqual({ age: 39 });
+  });
+  it(".toHaveLength", () => {
+    expect("hello").toHaveLength(5); // 문자열 길이 테스트
+  });
+  it(".toHaveProperty", () => {
+    expect({ name: "Mark" }).toHaveProperty("name");
+    expect({ name: "Mark" }).toHaveProperty("name", "Mark");
+  });
+  it(".toBeDefined", () => {
+    expect({ name: "Mark" }.name).toBeDefined();
+  });
+  it(".toBeFalsy", () => {
+    expect(false).toBeFalsy();
+    expect(0).toBeFalsy();
+    expect("").toBeFalsy();
+    expect(null).toBeFalsy();
+    expect(undefined).toBeFalsy();
+    expect(NaN).toBeFalsy();
+  });
+  it(".toBeGreaterThan", () => {
+    expect(10).toBeGreaterThan(10);
+  });
+  it(".toBeGreaterThanOrEqual", () => {
+    expect(10).toBeGreaterThanOrEqual(10);
+  });
+  it(".toBeInstanceOf", () => {
+    class Foo {}
+    expect(new Foo()).toBeInstanceOf(Foo);
+  });
+});
+```
+
+</div>
+<details>
+
+<details>
+<summary> :pencil: 03. Testing-libraryReact 활용하기  </summary>
+<div markdown="1">
+
+## Button 컴포넌트
+
+- 컴포넌트가 정상적으로 생성된다.
+- "button" 이라고 쓰여있는 element 는 HTMLButtonElement 이다.
+- 버튼을 클릭하면, p 태그 안에 "버튼이 방금 눌렸다." 라고 쓰여진다.
+- 버튼을 클릭하기 전에는, p 태그 안에 "버튼이 눌리지 않았다" 라고 쓰여진다.
+- 버튼을 클릭하고 5초 뒤에는, p 태그 안에 "버튼이 눌리지 않았다." 라고 쓰여진다.
+- 버튼을 클릭하면, 5초 동안 버튼이 비활성화 된다.
+</div>
+<details>
+
+:open_file_folder: ch9. React Advanced
+
+<details>
+<summary> :pencil: 01. Optimizing performance  </summary>
+<div markdown="1">
+
+## Optimizing performance
+
+필요할 때만 렌더 한다.
+
+</div>
+<details>
